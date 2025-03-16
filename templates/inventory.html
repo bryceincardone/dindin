@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DinDin - Inventory</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>{{ username }}'s Inventory</h1>
+
+  <nav>
+    <a href="/grocerylist">Grocery List</a> |
+    <a href="/recipes">Meal Prep</a> |
+    <a href="/">Logout</a>
+  </nav>
+
+  <h2>Add Item to Inventory</h2>
+  <form action="/add-item" method="post">
+    <input type="text" name="item" placeholder="Item name" required>
+    <select name="category" required>
+      <option disabled selected value="">Select Category</option>
+      <option value="Dry Ingredients">Dry Ingredients</option>
+      <option value="Wet Ingredients">Wet Ingredients</option>
+      <option value="Spices">Spices</option>
+      <option value="Canned">Canned</option>
+      <option value="Frozen">Frozen</option>
+      <option value="Fridge">Fridge</option>
+      <option value="Vegetables">Vegetables</option>
+      <option value="Fruits">Fruits</option>
+      <option value="Snacks">Snacks</option>
+      <option value="Drinks">Drinks</option>
+      <option value="Other">Other</option>
+    </select>
+    <button type="submit">Add Item</button>
+  </form>
+
+  <h2>Your Inventory</h2>
+  {% if categories %}
+    <div class="inventory-grid">
+      {% for category, items in categories.items() %}
+        <div class="inventory-category">
+          <h3>{{ category }}</h3>
+          <ul class="inventory-scroll">
+            {% for item in items %}
+            <li style="display: flex; justify-content: space-between; align-items: center; line-height: 1.6;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>{{ item }}</span>
+                <form action="/move-to-grocery" method="post" style="display:inline;">
+                  <input type="hidden" name="item" value="{{ item }}">
+                  <input type="hidden" name="category" value="{{ category }}">
+                  <button type="submit" style="background-color: transparent; color: #0066cc; font-size: 18px; border: none; position: relative; top: 4px;">➡️</button>
+                </form>
+              </div>
+              <form action="/delete-item" method="post" style="display:inline;">
+                <input type="hidden" name="item" value="{{ item }}">
+                <input type="hidden" name="category" value="{{ category }}">
+                <button type="submit" style="background-color: transparent; color: red; font-size: 18px; border: none; position: relative; top: 4px;">❌</button>
+              </form>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Your inventory is currently empty.</p>
+  {% endif %}
+</body>
+</html>

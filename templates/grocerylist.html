@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DinDin - Grocery List</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>{{ username }}'s Grocery List</h1>
+
+  <nav>
+    <a href="/inventory">Inventory</a> |
+    <a href="/recipes">Meal Prep</a> |
+    <a href="/">Logout</a>
+  </nav>
+
+  {% if grocery_list %}
+    <ul>
+      {% for entry in grocery_list %}
+        <li>
+          {{ entry.item }} ({{ entry.category }})
+          {% if entry.required_for %}
+            <strong style="color: red;">Required for: {{ entry.required_for }}</strong>
+          {% endif %}
+          <form action="/move-to-inventory" method="post" style="display:inline;">
+            <input type="hidden" name="item" value="{{ entry.item }}">
+            <button type="submit">Restock to Inventory</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Your grocery list is currently empty.</p>
+  {% endif %}
+</body>
+</html>

@@ -1,0 +1,119 @@
+{
+  "users": {
+    "exampleuser": {
+      "password": "password123",
+      "theme_color": "#ffffff",
+      "inventory": {
+        "Dry Ingredients": [
+          "Flour",
+          "Rice"
+        ],
+        "Wet Ingredients": [
+          "Olive Oil"
+        ],
+        "Spices": [
+          "Salt",
+          "Pepper"
+        ],
+        "Canned": [
+          "Beans",
+          "Tuna"
+        ],
+        "Frozen": [
+          "Frozen Peas"
+        ],
+        "Fridge": [
+          "Milk",
+          "Eggs"
+        ],
+        "Vegetables": [
+          "Carrots",
+          "Lettuce"
+        ],
+        "Fruits": [
+          "Bananas",
+          "Apples"
+        ],
+        "Snacks": [
+          "Granola Bars"
+        ],
+        "Drinks": [
+          "Orange Juice"
+        ],
+        "Other": []
+      },
+      "grocery_list": [],
+      "recipes": {
+        "Pancakes": [
+          "Flour",
+          "Eggs",
+          "Milk"
+        ],
+        "Spaghetti": [
+          "Pasta",
+          "Tomato Sauce"
+        ]
+      }
+    },
+    "scouty": {
+      "password": "pie",
+      "theme_color": "#c8e1f9",
+      "inventory": {
+        "Dry Ingredients": [
+          "Flour"
+        ],
+        "Wet Ingredients": [],
+        "Spices": [],
+        "Canned": [],
+        "Frozen": [],
+        "Fridge": [
+          "Milk"
+        ],
+        "Vegetables": [
+          "Carrots",
+          "Peas"
+        ],
+        "Fruits": [],
+        "Snacks": [],
+        "Drinks": [],
+        "Other": []
+      },
+      "grocery_list": [
+        {
+          "item": "Eggs",
+          "category": "Fridge"
+        }
+      ],
+      "recipes": {
+        "Pancakes": [
+          "Flour",
+          "Eggs",
+          "Milk"
+        ],
+        "Bread": [
+          "Eggs",
+          "Flour"
+        ]
+      }
+    },
+    "test": {
+      "password": "123",
+      "theme_color": "#ffffff",
+      "inventory": {
+        "Dry Ingredients": [],
+        "Wet Ingredients": [],
+        "Spices": [],
+        "Canned": [],
+        "Frozen": [],
+        "Fridge": [],
+        "Vegetables": [],
+        "Fruits": [],
+        "Snacks": [],
+        "Drinks": [],
+        "Other": []
+      },
+      "grocery_list": [],
+      "recipes": {}
+    }
+  }
+}

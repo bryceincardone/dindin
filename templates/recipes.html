@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DinDin - Meal Prep</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>{{ username }}'s Recipes</h1>
+
+  <nav>
+    <a href="/inventory">Inventory</a> |
+    <a href="/grocerylist">Grocery List</a> |
+    <a href="/">Logout</a>
+  </nav>
+
+  <h2>Add a New Recipe</h2>
+  <form action="/add-recipe" method="post">
+    <input type="text" name="recipe_name" placeholder="Recipe name" required>
+    <input type="text" name="ingredients" placeholder="Ingredients (comma-separated)" required>
+    <button type="submit">Add Recipe</button>
+  </form>
+
+  <h2>Your Recipes</h2>
+  {% if recipes %}
+    <ul>
+      {% for recipe in recipes %}
+        <li>
+          <strong>{{ recipe.name }}</strong><br>
+          Ingredients: {{ recipe.ingredients }}<br>
+          {% if recipe_missing[recipe.name] %}
+            <span style="color: red;">Missing: {{ recipe_missing[recipe.name] | join(', ') }}</span><br>
+          {% else %}
+            <span style="color: green;">You have all ingredients!</span><br>
+          {% endif %}
+          <form action="/prepare-recipe" method="post" style="display:inline;">
+            <input type="hidden" name="recipe_name" value="{{ recipe.name }}">
+            <button type="submit">Prepare</button>
+          </form>
+          <form action="/unprepare-recipe" method="post" style="display:inline;">
+            <input type="hidden" name="recipe_name" value="{{ recipe.name }}">
+            <button type="submit">Unprepare</button>
+          </form>
+          <form action="/delete-recipe" method="post" style="display:inline;">
+            <input type="hidden" name="recipe_name" value="{{ recipe.name }}">
+            <button type="submit">Delete</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No recipes added yet.</p>
+  {% endif %}
+</body>
+</html>
