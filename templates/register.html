@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DinDin - Register</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Create a DinDin Account</h1>
+
+  <h2>Register</h2>
+  <form action="/register" method="post">
+    <input type="text" name="username" placeholder="Choose a username" required>
+    <input type="password" name="password" placeholder="Choose a password" required>
+    <button type="submit">Register</button>
+  </form>
+
+  <p>Already have an account? <a href="/">Login here</a></p>
+</body>
+</html>
