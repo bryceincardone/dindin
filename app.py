@@ -31,6 +31,7 @@ class GroceryItem(db.Model):
     item = db.Column(db.String(100), nullable=False)
     category = db.Column(db.String(50), nullable=False)
     required_for = db.Column(db.String(255))
+    priority = db.Column(db.Boolean, default=True)  # ✅ New field
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class Recipe(db.Model):
@@ -93,12 +94,10 @@ def add_item():
     category = request.form['category']
     user = User.query.filter_by(username=username).first()
 
-    # Check if item is already in grocery list — prevent adding it to inventory
     existing_grocery = GroceryItem.query.filter_by(user_id=user.id, item=item).first()
     if existing_grocery:
-        return f"Item '{item}' is currently in your grocery list. Restock it from grocery list instead."
+        return f"Item '{item}' is already in your grocery list."
 
-    # Check if item already in inventory (optional if you want to avoid duplicate inventory entries)
     existing_inventory = InventoryItem.query.filter_by(user_id=user.id, item=item, category=category).first()
     if not existing_inventory:
         db.session.add(InventoryItem(item=item, category=category, user_id=user.id))
@@ -123,16 +122,25 @@ def move_to_grocery():
     category = request.form['category']
     user = User.query.filter_by(username=username).first()
 
-    # ✅ Remove item from inventory first
     InventoryItem.query.filter_by(user_id=user.id, item=item, category=category).delete()
 
-    # ✅ Check if it's already in grocery list
     existing = GroceryItem.query.filter_by(user_id=user.id, item=item).first()
     if not existing:
-        db.session.add(GroceryItem(item=item, category=category, user_id=user.id))
+        db.session.add(GroceryItem(item=item, category=category, priority=True, user_id=user.id))
 
     db.session.commit()
     return redirect(url_for('inventory'))
+
+@app.route('/toggle-priority', methods=['POST'])
+def toggle_priority():
+    username = session.get('username')
+    item_name = request.form['item']
+    user = User.query.filter_by(username=username).first()
+    item = GroceryItem.query.filter_by(user_id=user.id, item=item_name).first()
+    if item:
+        item.priority = not item.priority
+        db.session.commit()
+    return redirect(url_for('grocerylist'))
 
 @app.route('/grocerylist')
 def grocerylist():
@@ -140,9 +148,18 @@ def grocerylist():
     if not username:
         return redirect(url_for('login'))
     user = User.query.filter_by(username=username).first()
-    grocery_list = GroceryItem.query.filter_by(user_id=user.id).all()
-    sorted_list = sorted(grocery_list, key=lambda x: (x.category.lower(), x.item.lower()))
-    return render_template('grocerylist.html', grocery_list=sorted_list, username=username)
+    all_items = GroceryItem.query.filter_by(user_id=user.id).all()
+
+    priority_items = [i for i in all_items if i.priority]
+    non_priority_items = [i for i in all_items if not i.priority]
+
+    priority_items = sorted(priority_items, key=lambda x: (x.category.lower(), x.item.lower()))
+    non_priority_items = sorted(non_priority_items, key=lambda x: (x.category.lower(), x.item.lower()))
+
+    return render_template('grocerylist.html',
+                           grocery_list=priority_items,
+                           non_priority_list=non_priority_items,
+                           username=username)
 
 @app.route('/move-to-inventory', methods=['POST'])
 def move_to_inventory():
@@ -209,7 +226,7 @@ def prepare_recipe():
             else:
                 existing.required_for = recipe_name
         else:
-            db.session.add(GroceryItem(item=i, category="Other", required_for=recipe_name, user_id=user.id))
+            db.session.add(GroceryItem(item=i, category="Other", required_for=recipe_name, priority=True, user_id=user.id))
     db.session.commit()
     return redirect(url_for('grocerylist'))
 
@@ -227,10 +244,6 @@ def unprepare_recipe():
                 i.required_for = ', '.join(required) if required else None
     db.session.commit()
     return redirect(url_for('grocerylist'))
-
-# Create tables before app runs
-with app.app_context():
-    db.create_all()
 
 if __name__ == '__main__':
     app.run(debug=True)

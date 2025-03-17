@@ -15,23 +15,52 @@
     <a href="/">Logout</a>
   </nav>
 
+  <h2>Priority Items</h2>
   {% if grocery_list %}
     <ul>
-      {% for entry in grocery_list %}
+      {% for item in grocery_list %}
         <li>
-          {{ entry.item }} ({{ entry.category }})
-          {% if entry.required_for %}
-            <strong style="color: red;">Required for: {{ entry.required_for }}</strong>
+          {{ item.item }} ({{ item.category }})
+          {% if item.required_for %}
+            - Required for: {{ item.required_for }}
           {% endif %}
           <form action="/move-to-inventory" method="post" style="display:inline;">
-            <input type="hidden" name="item" value="{{ entry.item }}">
-            <button type="submit">Restock to Inventory</button>
+            <input type="hidden" name="item" value="{{ item.item }}">
+            <button type="submit">✅ Restock</button>
+          </form>
+          <form action="/toggle-priority" method="post" style="display:inline;">
+            <input type="hidden" name="item" value="{{ item.item }}">
+            <button type="submit">⬇️ Non-Priority</button>
           </form>
         </li>
       {% endfor %}
     </ul>
   {% else %}
-    <p>Your grocery list is currently empty.</p>
+    <p>No priority grocery items.</p>
+  {% endif %}
+
+  <h2>Non-Priority Items</h2>
+  {% if non_priority_list %}
+    <ul>
+      {% for item in non_priority_list %}
+        <li>
+          {{ item.item }} ({{ item.category }})
+          {% if item.required_for %}
+            - Required for: {{ item.required_for }}
+          {% endif %}
+          <form action="/move-to-inventory" method="post" style="display:inline;">
+            <input type="hidden" name="item" value="{{ item.item }}">
+            <button type="submit">✅ Restock</button>
+          </form>
+          <form action="/toggle-priority" method="post" style="display:inline;">
+            <input type="hidden" name="item" value="{{ item.item }}">
+            <button type="submit">⬆️ Priority</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No non-priority grocery items.</p>
   {% endif %}
 </body>
 </html>
